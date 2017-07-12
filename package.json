@@ -2,12 +2,16 @@
   "name": "generator-react-library-component",
   "version": "0.1.0",
   "description": "Generate a new react component as part of a react component library - components created for reuse in other projects",
-  "author": "Amanda Hecimovich",
+  "author" : "Amanda Hecimovich <amhecimovich@gmail.com> (https://github.com/aheci)",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/aheci/generator-react-library-component.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "generators"
   ],

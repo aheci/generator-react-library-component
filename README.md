@@ -7,6 +7,7 @@
 or
 
 1. `yo react-library-component [ComponentName] [component type (class or function)]`
+2. Follow prompts
 
 ## First Time Setup Instructions
 - Each time you run `yo react-library-component` the generator will check for a set of required configurations in your `yo-rc.json` file including:
@@ -30,27 +31,14 @@ or
   ```
   
   Where `libraryRoot` is your component development folder and `buildFolder` is your component build folder
+  - .npmignore - will create basic implementation if this file doesn't already exist.
+  - .gitignore - will create basic implementation if this file doesn't already exist.
+  - .yo-rc.json - will hold your config options set during initial run of generator
+  - /componentRoot/global_style_variables.scss - is placed in your development folder - this file will be imported into each component's scss file to allow access to any placeholders, mixins, and variables you may want to share between components (to avoid duplicated code these files should not include any actual css rules, only variables, mixins, and placeholders).
+  - /componentRoot/index.js - this file is appended to each time you create a new component and is used to map each component to it's folder so that consumers of your library do not have to understand your file tree to make use of a component.
 
 ## Creates The Following
+After initial run, the following files are created each time you create a new component
 - index.js file basic react component - function or class scaffolded depending on user input.  automatically imports component style sheet & creates wrapper div
 - style.scss file that automatically imports global style variables & creates wrapping class
 - package.json for the component
-- Appends component to library's root index.js inventory file
-- global style variable file - for projects to import or record placeholders, mixins, and variables accessible by each component (to avoid duplicated code these files should not include any actual css rules, only variables, mixins, and placeholders).
-
-## Wishlist
-- Create library beginning scaffolding to run first & then individual components created within
-  - Include webpack configuration to build library scss to css & babel
-  - Include ESLint 
-  - Include Stylelint
-  - (cli prompts on build & a11y).
-- Configure install
-- Add documentation generator for each component
-- Add test file for each component
-- Add HOC template
-- For each HOC component ability to generate a component that uses the HOC
-- Create themed components
-- Add command to delete a component
-- Remove log notes for debugging
-- Allow components to go into a subdirectory of the library
-- Allow styling options (currently scss only - what about less or vanilla css?)
