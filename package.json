@@ -1,21 +1,24 @@
 {
   "name": "generator-react-library-component",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generate a new react component as part of a react component library - components created for reuse in other projects",
-  "author" : "Amanda Hecimovich <amhecimovich@gmail.com> (https://github.com/aheci)",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/aheci/generator-react-library-component.git"
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aheci/generator-react-library-component.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
   "license": "MIT",
   "files": [
     "generators"
   ],
-  "keywords": ["yeoman-generator", "react-library", "react-components"],
+  "keywords": [
+    "yeoman-generator",
+    "react-library",
+    "react-components"
+  ],
   "dependencies": {
     "yeoman-generator": "^1.0.0"
   }
