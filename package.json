@@ -1,0 +1,18 @@
+{
+  "name": "generator-react-library-component",
+  "version": "0.1.0",
+  "description": "Generate a new react component as part of a react component library - components created for reuse in other projects",
+  "author": "Amanda Hecimovich",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "generators"
+  ],
+  "keywords": ["yeoman-generator", "react-library", "react-components"],
+  "dependencies": {
+    "yeoman-generator": "^1.0.0"
+  }
+}

@@ -1,0 +1,6 @@
+#<%= appName %> gitignore file Library Root is: <%= libraryRoot %>
+
+/node_modules/
+
+yarn.lock
+

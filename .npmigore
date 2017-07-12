@@ -1,0 +1,6 @@
+/*
+/*/
+!/lib/
+!.gitignore
+!.npmignore
+!package.json

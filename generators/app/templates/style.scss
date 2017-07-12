@@ -1,0 +1,6 @@
+//Styles for <%= componentNamePretty %>
+@import '../../global_style_variables';
+
+.<%= componentNamePiped %> {
+  //Nest css rules for <%= componentNamePretty %> here.
+}

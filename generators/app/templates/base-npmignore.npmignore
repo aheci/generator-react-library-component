@@ -1,0 +1,6 @@
+/*
+/*/
+!/<%= buildFolder %>/
+!.gitignore
+!.npmignore
+!package.json
