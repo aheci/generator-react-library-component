@@ -43,64 +43,68 @@ module.exports = class extends Generator {
     }
   }
   
-  setLibraryName() {
+  libraryUserInput() {
     if(this.libraryName === undefined) {
-      return this.prompt([
-        {
-          type: 'input',
-          name: 'libraryName',
-          message: 'What is the name of your library?'
-        }
-      ]).then((answers) => {
-        this.libraryName = answers.libraryName;
-        this.config.set('libraryName', this.libraryName);
-      });
-    }  
-  }
-  
-  setAppOutput() {
-    //Decide where components should go
+      _setLibraryName();  
+    }
     if(this.componentsRoot === undefined) {
-      return this.prompt([
-        {
-          type: 'input',
-          name: 'componentsRoot',
-          message: 'What folder do you want to place library in?'
-        }
-      ]).then((answers) => {
-        this.componentsRoot = answers.componentsRoot;
-        this.config.set('componentsRoot', this.componentsRoot);
-      });
+      _setComponentsRoot();
+    }
+    if(this.libraryBuildPath === undefined) {
+      _setlibraryBuildPath();
     }
   }
   
-  setlibraryBuildPath() {
-    if(this.libraryBuildPath === undefined) {
-      return this.prompt([
-        {
-          type: 'input',
-          name: 'libraryBuildPath',
-          message: 'Where should built files go for npm?'
-        }
-      ]).then((answers) => {
-        this.libraryBuildPath = answers.libraryBuildPath;
-        this.config.set('libraryBuildPath', this.libraryBuildPath);
-      });
-    }
+  _setLibraryName() {
+    return this.prompt([
+      {
+        type: 'input',
+        name: 'libraryName',
+        message: 'What is the name of your component library?'
+      }
+    ]).then((answers) => {
+      this.libraryName = answers.libraryName;
+      this.config.set('libraryName', this.libraryName);
+    });
+  }
+  
+  _setComponentsRoot() {
+    return this.prompt([
+      {
+        type: 'input',
+        name: 'componentsRoot',
+        message: 'What folder do you want to develop your components in?'
+      }
+    ]).then((answers) => {
+      this.componentsRoot = answers.componentsRoot;
+      this.config.set('componentsRoot', this.componentsRoot);
+    });
+  }
+  
+  _setlibraryBuildPath() {
+    return this.prompt([
+      {
+        type: 'input',
+        name: 'libraryBuildPath',
+        message: 'Where should built files go for npm?'
+      }
+    ]).then((answers) => {
+      this.libraryBuildPath = answers.libraryBuildPath;
+      this.config.set('libraryBuildPath', this.libraryBuildPath);
+    });
   }
   
 
   
   _pipeString(word) {
-    this.log("Pipe passed: ",word);
     return(word.replace(/ /g,"-").toLowerCase());
   }
   _titleCaseString(word) {
-    this.log("Title passed: ",word);
     var stageWord = word.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     return(stageWord.replace(/ /g, ""));
     
   }
+  
   
   handleIndexInventoryFile() {
     //update if it's already there
@@ -191,19 +195,19 @@ module.exports = class extends Generator {
     if(this.componentType == 'function') {
       this.fs.copyTpl(
         this.templatePath('function.js'),
-        this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/index.js'),
+        this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
         {
-          componentName: this.componentNameReactish,
-          componentNamePiped: this.componentNamePiped,
+          componentName: this._titleCaseString(this.componentName),
+          componentNamePiped: this._pipeString(this.componentName),
         }
       );  
     } else {
       this.fs.copyTpl(
         this.templatePath('class.js'),
-        this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/index.js'),
+        this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
         {
-          componentName: this.componentNameReactish,
-          componentNamePiped: this.componentNamePiped,
+          componentName: this._titleCaseString(this.componentName),
+          componentNamePiped: this._pipeString(this.componentName),
         }
       );  
     }
@@ -212,18 +216,18 @@ module.exports = class extends Generator {
   createJsonFile() {
     this.fs.copyTpl(
       this.templatePath('package.json'),
-      this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/package.json'),
-      { componentName: this.componentNameReactish }
+      this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/package.json'),
+      { componentName: this._titleCaseString(this.componentName) }
     );  
   }
   
   createStyleFile() {
     this.fs.copyTpl(
       this.templatePath('style.scss'),
-      this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/style.scss'),
+      this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/style.scss'),
       {
         componentName: this.componentName,
-        componentNamePiped: this.componentNamePiped,
+        componentNamePiped: this._pipeString(this.componentName),
       }
     );  
   }
