@@ -10,7 +10,7 @@ const defaultProps = {
   //set default props
 }
 
-export default class <%= componentNamePretty %> extends Component {
+export default class <%= componentName %> extends Component {
   constructor() {
     super();
     this.state = {
@@ -47,5 +47,5 @@ export default class <%= componentNamePretty %> extends Component {
   }
 }
 
-<%= componentNamePretty %>.propTypes = propTypes;
-<%= componentNamePretty %>.defaultProps = defaultProps;
+<%= componentName %>.propTypes = propTypes;
+<%= componentName %>.defaultProps = defaultProps;

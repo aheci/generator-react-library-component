@@ -10,7 +10,7 @@ const defaultProps = {
   
 }
 
-export default function <%= componentNamePretty %>(props) {
+export default function <%= componentName %>(props) {
   return (
     <div className="<%= componentNamePiped %>">
       {/* Place your elements here */}
@@ -18,5 +18,5 @@ export default function <%= componentNamePretty %>(props) {
   )
 }
 
-<%= componentNamePretty %>.propTypes = propTypes;
-<%= componentNamePretty %>.defaultProps = defaultProps;
+<%= componentName %>.propTypes = propTypes;
+<%= componentName %>.defaultProps = defaultProps;

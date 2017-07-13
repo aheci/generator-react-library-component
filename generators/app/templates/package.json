@@ -1,5 +1,5 @@
 {
   "private": true,
-  "name": "<%= componentNamePretty %>",
+  "name": "<%= componentName %>",
   "main": "./index.js"
 }

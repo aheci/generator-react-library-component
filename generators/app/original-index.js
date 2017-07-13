@@ -4,10 +4,10 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     
-    this.argument('componentNamePretty', { type: String, required: false});
+    this.argument('componentName', { type: String, required: false});
     this.argument('componentType', { type: String, required: false});
     
-    this.log('Option Name', this.options.componentNamePretty);
+    this.log('Option Name', this.options.componentName);
     this.log('Option Type', this.options.componentType);
     
     this.appName = this.config.get('appName');
@@ -65,9 +65,9 @@ module.exports = class extends Generator {
     return this.prompt([
       {
         type : 'input',
-        name : 'componentNamePretty',
+        name : 'componentName',
         message : 'What is the name of your component?',
-        default : this.options.componentNamePretty,
+        default : this.options.componentName,
         required : true
       }, {
         type : 'input',
@@ -76,11 +76,11 @@ module.exports = class extends Generator {
         default : this.options.componentType ? this.options.componentType : 'function'
       }
     ]).then((answers) => {
-      this.log('Component name: ', answers.componentNamePretty);
+      this.log('Component name: ', answers.componentName);
       this.log('Component Type: ', answers.componentType);
-      this.componentNamePretty = answers.componentNamePretty;
-      this.componentNamePiped = this._pipeString(this.componentNamePretty);
-      this.componentNameReactish = this._titleCaseString(this.componentNamePretty);
+      this.componentName = answers.componentName;
+      this.componentNamePiped = this._pipeString(this.componentName);
+      this.componentNameReactish = this._titleCaseString(this.componentName);
       this.componentType = answers.componentType;
       
       this.log('Piped Name: ', this.componentNamePiped);
@@ -179,7 +179,7 @@ module.exports = class extends Generator {
       this.fs.copyTpl(
         this.templatePath('global_vars.scss'),
         this.destinationPath(this.componentRoot+'/global_style_variables.scss'),
-        { componentNamePretty: this.componentNamePretty }
+        { componentName: this.componentName }
       );    
     }
   }
@@ -190,7 +190,7 @@ module.exports = class extends Generator {
         this.templatePath('function.js'),
         this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/index.js'),
         {
-          componentNamePretty: this.componentNameReactish,
+          componentName: this.componentNameReactish,
           componentNamePiped: this.componentNamePiped,
         }
       );  
@@ -199,7 +199,7 @@ module.exports = class extends Generator {
         this.templatePath('class.js'),
         this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/index.js'),
         {
-          componentNamePretty: this.componentNameReactish,
+          componentName: this.componentNameReactish,
           componentNamePiped: this.componentNamePiped,
         }
       );  
@@ -210,7 +210,7 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath('package.json'),
       this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/package.json'),
-      { componentNamePretty: this.componentNameReactish }
+      { componentName: this.componentNameReactish }
     );  
   }
   
@@ -219,7 +219,7 @@ module.exports = class extends Generator {
       this.templatePath('style.scss'),
       this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/style.scss'),
       {
-        componentNamePretty: this.componentNamePretty,
+        componentName: this.componentName,
         componentNamePiped: this.componentNamePiped,
       }
     );  
