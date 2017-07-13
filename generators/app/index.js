@@ -13,10 +13,9 @@ module.exports = class extends Generator {
     
     this.componentName = this.options.componentName ? this.options.componentName : null;
     this.componentType = this.options.componentType ? this.options.componentType : null;
-    
   }
-
-//Component Related Inputs
+  
+  //Component Related Inputs
   componentUserInput() {
     if (this.componentName === null) {
       return this.prompt([
@@ -43,8 +42,8 @@ module.exports = class extends Generator {
       });
     }
   }
-
-//General Library Related Inputs
+  
+  //General Library Related Inputs
   libraryUserInput() {
     if(this.libraryName === undefined) {
       _setLibraryName();  
@@ -56,7 +55,6 @@ module.exports = class extends Generator {
       _setlibraryBuildPath();
     }
   }
-  
   _setLibraryName() {
     return this.prompt([
       {
@@ -69,7 +67,6 @@ module.exports = class extends Generator {
       this.config.set('libraryName', this.libraryName);
     });
   }
-  
   _setComponentsRoot() {
     return this.prompt([
       {
@@ -82,7 +79,6 @@ module.exports = class extends Generator {
       this.config.set('componentsRoot', this.componentsRoot);
     });
   }
-  
   _setlibraryBuildPath() {
     return this.prompt([
       {
@@ -96,8 +92,7 @@ module.exports = class extends Generator {
     });
   }
   
-
-// Format the words
+  // Format the words
   _pipeString(word) {
     return(word.replace(/ /g,"-").toLowerCase());
   }
@@ -128,7 +123,7 @@ module.exports = class extends Generator {
     _createComponentStyles();
   }
   
-
+//TODO: rename and rework these to match above implementation
   _handleIndexInventoryFile() {
     //update if it's already there
     if(this.fs.exists(this.componentsRoot+'/index.js')) {
