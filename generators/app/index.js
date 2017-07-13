@@ -38,7 +38,7 @@ module.exports = class extends Generator {
           default : 'function'
         }  
       ]).then((answer) => {
-        this.componentType = answer.componentType;
+        this.componentType = answer.componentType.toLowerCase();
       });
     }
   }
@@ -130,7 +130,7 @@ module.exports = class extends Generator {
       this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
     } else { //if not create it & append to it
       this.fs.copy(
-        this.templatePath('component-index.js'),
+        this.templatePath('component-templates/component-index.js'),
         this.destinationPath(this.componentsRoot+'/index.js')
       )
       this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
@@ -142,7 +142,7 @@ module.exports = class extends Generator {
       this.log("Skipping readme");
     } else {
       this.fs.copyTpl(
-        this.templatePath('README.md'),
+        this.templatePath('library-templates/README.md'),
         this.destinationPath(process.cwd()+'/README.md'),
         {
           libraryName: this.libraryName,
@@ -158,7 +158,7 @@ module.exports = class extends Generator {
       this.log("skipping gitignore");
     } else {
       this.fs.copyTpl(
-        this.templatePath('.gitignore'),
+        this.templatePath('library-templates/.gitignore'),
         this.destinationPath(process.cwd()+'/.gitignore'),
         {
           libraryName: this._titleCaseStringNoSpaces(this.libraryName),
@@ -173,7 +173,7 @@ module.exports = class extends Generator {
       this.log("skipping package.json");
     } else {
       this.fs.copyTpl(
-        this.templatePath('base-package.json'),
+        this.templatePath('library-templates/base-package.json'),
         this.destinationPath(process.cwd()+'/package.json'),
         {
           libraryName: this._pipeString(this.libraryName),
@@ -188,7 +188,7 @@ module.exports = class extends Generator {
       this.log("skipping npm ignore file");
     } else {
       this.fs.copyTpl(
-        this.templatePath('base-npmignore.npmignore'),
+        this.templatePath('library-templates/base-npmignore.npmignore'),
         this.destinationPath(process.cwd()+'/.npmigore'),
         {
           buildFolder: this.libraryBuildPath,
@@ -202,7 +202,7 @@ module.exports = class extends Generator {
       this.log("Global Variables skipped bcz it exists");
     } else {
       this.fs.copyTpl(
-        this.templatePath('global_vars.scss'),
+        this.templatePath('components-root-templates/global_vars.scss'),
         this.destinationPath(this.componentsRoot+'/global_style_variables.scss'),
         { componentName: this.componentName }
       );    
@@ -212,7 +212,7 @@ module.exports = class extends Generator {
   _createJSFile() {
     if(this.componentType == 'function') {
       this.fs.copyTpl(
-        this.templatePath('function.js'),
+        this.templatePath('component-templates/function.js'),
         this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
         {
           componentName: this._titleCaseStringNoSpaces(this.componentName),
@@ -221,7 +221,7 @@ module.exports = class extends Generator {
       );  
     } else {
       this.fs.copyTpl(
-        this.templatePath('class.js'),
+        this.templatePath('component-templates/class.js'),
         this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
         {
           componentName: this._titleCaseStringNoSpaces(this.componentName),
@@ -233,7 +233,7 @@ module.exports = class extends Generator {
 
   _createJsonFile() {
     this.fs.copyTpl(
-      this.templatePath('package.json'),
+      this.templatePath('component-templates/package.json'),
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/package.json'),
       { componentName: this._titleCaseStringNoSpaces(this.componentName) }
     );  
@@ -241,7 +241,7 @@ module.exports = class extends Generator {
   
   _createStyleFile() {
     this.fs.copyTpl(
-      this.templatePath('style.scss'),
+      this.templatePath('component-templates/style.scss'),
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/style.scss'),
       {
         componentName: this.componentName,
