@@ -6,7 +6,7 @@ module.exports = class extends Generator {
     
     this.libraryName = this.config.get('libraryName');
     this.componentRoot = this.config.get('componentRoot');
-    this.appBuildPath = this.config.get('appBuildPath');
+    this.libraryBuildPath = this.config.get('libraryBuildPath');
     
     this.argument('componentNamePretty', { type: String, required: false});
     this.argument('componentType', { type: String, required: false});
@@ -43,17 +43,17 @@ module.exports = class extends Generator {
     }
   }
   
-  setAppBuildPath() {
-    if(this.appBuildPath === undefined) {
+  setlibraryBuildPath() {
+    if(this.libraryBuildPath === undefined) {
       return this.prompt([
         {
           type: 'input',
-          name: 'appBuildPath',
+          name: 'libraryBuildPath',
           message: 'Where should built files go for npm?'
         }
       ]).then((answers) => {
-        this.appBuildPath = answers.appBuildPath;
-        this.config.set('appBuildPath', this.appBuildPath);
+        this.libraryBuildPath = answers.libraryBuildPath;
+        this.config.set('libraryBuildPath', this.libraryBuildPath);
       });
     }
   }
@@ -149,7 +149,7 @@ module.exports = class extends Generator {
         this.destinationPath(process.cwd()+'/package.json'),
         {
           libraryName: this._pipeString(this.libraryName),
-          buildFolder: this.appBuildPath,
+          buildFolder: this.libraryBuildPath,
           libraryRoot: this.componentRoot,
         }
       )
@@ -163,7 +163,7 @@ module.exports = class extends Generator {
         this.templatePath('base-npmignore.npmignore'),
         this.destinationPath(process.cwd()+'/.npmigore'),
         {
-          buildFolder: this.appBuildPath,
+          buildFolder: this.libraryBuildPath,
         }
       )
     }

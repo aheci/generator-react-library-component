@@ -13,7 +13,7 @@ or
 - Each time you run `yo react-library-component` the generator will check for a set of required configurations in your `yo-rc.json` file including:
   - libraryName: the name of your library (enter as space seperated words, the generator will pipe and title case them as needed)
   - componentRoot:  The folder that you want to develop your react components from 
-  - appBuildPath:  The folder that you want babel to place your compiled components in.  This config is used in a generated npmignore file - set to ignore everything except for this compiled folder
+  - libraryBuildPath:  The folder that you want babel to place your compiled components in.  This config is used in a generated npmignore file - set to ignore everything except for this compiled folder
 - The generator also checks the root of your library for the following files, if they exist it **does not** edit them.  If they don't exist, it will create them with some basic defaults:
   - README.md - If no readme exists you will get a basic starting point with instructions on creating and using components based on your initial configurations
   - package.json - If no package.json exists you will get a basic starting point based on your initial configurates.  If you already have one, make sure it includes the following packages:
