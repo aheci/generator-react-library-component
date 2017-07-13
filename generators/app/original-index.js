@@ -4,25 +4,28 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     
-    this.libraryName = this.config.get('libraryName');
-    this.componentRoot = this.config.get('componentRoot');
-    this.appBuildPath = this.config.get('appBuildPath');
-    
     this.argument('componentNamePretty', { type: String, required: false});
     this.argument('componentType', { type: String, required: false});
+    
+    this.log('Option Name', this.options.componentNamePretty);
+    this.log('Option Type', this.options.componentType);
+    
+    this.appName = this.config.get('appName');
+    this.componentRoot = this.config.get('componentRoot');
+    this.appBuildPath = this.config.get('appBuildPath');
   }
   
-  setLibraryName() {
-    if(this.libraryName === undefined) {
+  setAppName() {
+    if(this.appName === undefined) {
       return this.prompt([
         {
           type: 'input',
-          name: 'libraryName',
+          name: 'appName',
           message: 'What is the name of your library?'
         }
       ]).then((answers) => {
-        this.libraryName = answers.libraryName;
-        this.config.set('libraryName', this.libraryName);
+        this.appName = answers.appName;
+        this.config.set('appName', this.appName);
       });
     }  
   }
@@ -117,9 +120,9 @@ module.exports = class extends Generator {
         this.templatePath('README.md'),
         this.destinationPath(process.cwd()+'/README.md'),
         {
-          libraryName: this.libraryName,
+          appName: this.appName,
           libraryRoot: this.componentRoot,
-          libraryNamePretty: this._titleCaseString(this.libraryName),
+          appNamePretty: this._titleCaseString(this.appName),
         }
       )
     }
@@ -133,7 +136,7 @@ module.exports = class extends Generator {
         this.templatePath('.gitignore'),
         this.destinationPath(process.cwd()+'/.gitignore'),
         {
-          libraryName: this._titleCaseString(this.libraryName),
+          appName: this._titleCaseString(this.appName),
           libraryRoot: this.componentRoot,
         }
       )
@@ -148,7 +151,7 @@ module.exports = class extends Generator {
         this.templatePath('base-package.json'),
         this.destinationPath(process.cwd()+'/package.json'),
         {
-          libraryName: this._pipeString(this.libraryName),
+          appName: this._pipeString(this.appName),
           buildFolder: this.appBuildPath,
           libraryRoot: this.componentRoot,
         }

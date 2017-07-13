@@ -1,4 +1,4 @@
-# <%= appNamePretty %> Component Library
+# <%= libraryNamePretty %> Component Library
 
 ## Document How to run it
 - make sure Yeoman is installed globally on your computer
@@ -22,9 +22,9 @@
 
 ## Document how to use the library in another project
 
-1.  Add the library as dev dependency `yarn add <%= appName %> --dev`
+1.  Add the library as dev dependency `yarn add <%= libraryName %> --dev`
 2.  Example - use library title component:
-  - import the component: `import {Title} from '<%= appName %>'`
+  - import the component: `import {Title} from '<%= libraryName %>'`
   - use the imported component: `<Title text="Testing Library Title Component" />`
 3.  Make sure Webpack is configured to handle SCSS files
 

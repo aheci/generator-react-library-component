@@ -1,4 +1,4 @@
-#<%= appName %> gitignore file Library Root is: <%= libraryRoot %>
+#<%= libraryName %> gitignore file Library Root is: <%= libraryRoot %>
 
 /node_modules/
 
