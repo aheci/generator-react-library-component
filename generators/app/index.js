@@ -15,7 +15,8 @@ module.exports = class extends Generator {
     this.componentType = this.options.componentType ? this.options.componentType : null;
     
   }
-  
+
+//Component Related Inputs
   componentUserInput() {
     if (this.componentName === null) {
       return this.prompt([
@@ -42,7 +43,8 @@ module.exports = class extends Generator {
       });
     }
   }
-  
+
+//General Library Related Inputs
   libraryUserInput() {
     if(this.libraryName === undefined) {
       _setLibraryName();  
@@ -95,18 +97,39 @@ module.exports = class extends Generator {
   }
   
 
-  
+// Format the words
   _pipeString(word) {
     return(word.replace(/ /g,"-").toLowerCase());
   }
-  _titleCaseString(word) {
+  _titleCaseStringNoSpaces(word) {
     var stageWord = word.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-    return(stageWord.replace(/ /g, ""));
-    
+    return(stageWord.replace(/ /g, ""));  
+  }
+  _titleCaseString(word) {
+    return (word.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}));
   }
   
+// Different Template File Levels
+  handleLibraryFiles() {
+    _createReadMe();
+    _createGitIgnore();
+    _createLibraryPackage();
+    _createNpmIgnore();
+  }
   
-  handleIndexInventoryFile() {
+  handleComponentsRootFiles() {
+    _createIndexInventoryFile();
+    _createGlobalStyleVariables();
+  }
+  
+  handleComponentFiles() {
+    _createJSFile();
+    _createComponentPackage();
+    _createComponentStyles();
+  }
+  
+
+  _handleIndexInventoryFile() {
     //update if it's already there
     if(this.fs.exists(this.componentsRoot+'/index.js')) {
       this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
@@ -119,7 +142,7 @@ module.exports = class extends Generator {
     }
   }
   
-  handleReadMe() {
+  _handleReadMe() {
     if(this.fs.exists(process.cwd()+'/README.md')) {
       this.log("Skipping readme");
     } else {
@@ -129,13 +152,13 @@ module.exports = class extends Generator {
         {
           libraryName: this.libraryName,
           libraryRoot: this.componentsRoot,
-          libraryNamePretty: this._titleCaseString(this.libraryName),
+          libraryNamePretty: this._titleCaseStringNoSpaces(this.libraryName),
         }
       )
     }
   }
   
-  createGitIgnore() {
+  _createGitIgnore() {
     if(this.fs.exists(process.cwd()+'/.gitignore')) {
       this.log("skipping gitignore");
     } else {
@@ -143,14 +166,14 @@ module.exports = class extends Generator {
         this.templatePath('.gitignore'),
         this.destinationPath(process.cwd()+'/.gitignore'),
         {
-          libraryName: this._titleCaseString(this.libraryName),
+          libraryName: this._titleCaseStringNoSpaces(this.libraryName),
           libraryRoot: this.componentsRoot,
         }
       )
     }
   }
   
-  createMainPackage() {
+  _createMainPackage() {
     if(this.fs.exists(process.cwd()+'/package.json')) {
       this.log("skipping package.json");
     } else {
@@ -165,7 +188,7 @@ module.exports = class extends Generator {
       )
     }
   }
-  createNpmIgnore() {
+  _createNpmIgnore() {
     if(this.fs.exists(process.cwd()+'/.npmignore')) {
       this.log("skipping npm ignore file");
     } else {
@@ -179,7 +202,7 @@ module.exports = class extends Generator {
     }
   }
 
-  createGlobalVars() {
+  _createGlobalVars() {
     if(this.fs.exists(this.componentsRoot+'/global_style_variables.scss')) {
       this.log("Global Variables skipped bcz it exists");
     } else {
@@ -191,13 +214,13 @@ module.exports = class extends Generator {
     }
   }
   
-  createJSFile() {
+  _createJSFile() {
     if(this.componentType == 'function') {
       this.fs.copyTpl(
         this.templatePath('function.js'),
         this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
         {
-          componentName: this._titleCaseString(this.componentName),
+          componentName: this._titleCaseStringNoSpaces(this.componentName),
           componentNamePiped: this._pipeString(this.componentName),
         }
       );  
@@ -206,22 +229,22 @@ module.exports = class extends Generator {
         this.templatePath('class.js'),
         this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
         {
-          componentName: this._titleCaseString(this.componentName),
+          componentName: this._titleCaseStringNoSpaces(this.componentName),
           componentNamePiped: this._pipeString(this.componentName),
         }
       );  
     }
   }
 
-  createJsonFile() {
+  _createJsonFile() {
     this.fs.copyTpl(
       this.templatePath('package.json'),
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/package.json'),
-      { componentName: this._titleCaseString(this.componentName) }
+      { componentName: this._titleCaseStringNoSpaces(this.componentName) }
     );  
   }
   
-  createStyleFile() {
+  _createStyleFile() {
     this.fs.copyTpl(
       this.templatePath('style.scss'),
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/style.scss'),

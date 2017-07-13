@@ -80,7 +80,7 @@ module.exports = class extends Generator {
       this.log('Component Type: ', answers.componentType);
       this.componentName = answers.componentName;
       this.componentNamePiped = this._pipeString(this.componentName);
-      this.componentNameReactish = this._titleCaseString(this.componentName);
+      this.componentNameReactish = this._titleCaseStringNoSpaces(this.componentName);
       this.componentType = answers.componentType;
       
       this.log('Piped Name: ', this.componentNamePiped);
@@ -92,7 +92,7 @@ module.exports = class extends Generator {
     this.log("Pipe passed: ",word);
     return(word.replace(/ /g,"-").toLowerCase());
   }
-  _titleCaseString(word) {
+  _titleCaseStringNoSpaces(word) {
     this.log("Title passed: ",word);
     var stageWord = word.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     return(stageWord.replace(/ /g, ""));
@@ -122,7 +122,7 @@ module.exports = class extends Generator {
         {
           appName: this.appName,
           libraryRoot: this.componentsRoot,
-          appNamePretty: this._titleCaseString(this.appName),
+          appNamePretty: this._titleCaseStringNoSpaces(this.appName),
         }
       )
     }
@@ -136,7 +136,7 @@ module.exports = class extends Generator {
         this.templatePath('.gitignore'),
         this.destinationPath(process.cwd()+'/.gitignore'),
         {
-          appName: this._titleCaseString(this.appName),
+          appName: this._titleCaseStringNoSpaces(this.appName),
           libraryRoot: this.componentsRoot,
         }
       )
