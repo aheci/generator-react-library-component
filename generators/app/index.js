@@ -106,132 +106,128 @@ module.exports = class extends Generator {
   
 // Different Template File Levels
   handleLibraryFiles() {
-    _createReadMe();
-    _createGitIgnore();
-    _createLibraryPackage();
-    _createNpmIgnore();
+    if(!this.fs.exists(process.cwd()+'/README.md')) {
+      _createReadMe();
+    }
+    if(!this.fs.exists(process.cwd()+'/.gitignore')) {
+      _createGitIgnore();
+    }
+    if(!this.fs.exists(process.cwd()+'/package.json')) {
+      _createLibraryPackage();
+    }
+    if(!this.fs.exists(process.cwd()+'/.npmignore')) {
+      _createNpmIgnore();
+    }
   }
   
   handleComponentsRootFiles() {
-    _createIndexInventoryFile();
-    _createGlobalStyleVariables();
+    if(!this.fs.exists(this.componentsRoot+'/index.js')) {
+      _createIndexInventoryFile();
+    }
+    if(!this.fs.exists(this.componentsRoot+'/global_style_variables.scss')) {
+      _createGlobalStyleVariables();
+    }
+    _updateIndexInventoryFile();
   }
   
   handleComponentFiles() {
-    _createJSFile();
+    if(this.componentType == 'function') {
+      _createJSFunctionFile();
+    } else {
+      _createJSClassFile();
+    }
+    
     _createComponentPackage();
     _createComponentStyles();
   }
   
 //TODO: rename and rework these to match above implementation
-  _handleIndexInventoryFile() {
-    //update if it's already there
-    if(this.fs.exists(this.componentsRoot+'/index.js')) {
-      this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
-    } else { //if not create it & append to it
-      this.fs.copy(
-        this.templatePath('component-templates/component-index.js'),
-        this.destinationPath(this.componentsRoot+'/index.js')
-      )
-      this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
-    }
+  _createIndexInventoryFile() {
+    this.fs.copy(
+      this.templatePath('component-templates/component-index.js'),
+      this.destinationPath(this.componentsRoot+'/index.js')
+    )
+  }
+  _updateIndexInventoryFile() {
+    this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this._titleCaseStringNoSpaces(this.componentName)+' } from "./'+this._pipeString(this.componentName)+'"')
   }
   
-  _handleReadMe() {
-    if(this.fs.exists(process.cwd()+'/README.md')) {
-      this.log("Skipping readme");
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('library-templates/README.md'),
-        this.destinationPath(process.cwd()+'/README.md'),
-        {
-          libraryName: this.libraryName,
-          libraryRoot: this.componentsRoot,
-          libraryNamePretty: this._titleCaseStringNoSpaces(this.libraryName),
-        }
-      )
-    }
+  _createReadMe() {
+    this.fs.copyTpl(
+      this.templatePath('library-templates/README.md'),
+      this.destinationPath(process.cwd()+'/README.md'),
+      {
+        libraryName: this.libraryName,
+        libraryRoot: this.componentsRoot,
+        libraryNamePretty: this._titleCaseString(this.libraryName),
+      }
+    )
   }
   
   _createGitIgnore() {
-    if(this.fs.exists(process.cwd()+'/.gitignore')) {
-      this.log("skipping gitignore");
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('library-templates/.gitignore'),
-        this.destinationPath(process.cwd()+'/.gitignore'),
-        {
-          libraryName: this._titleCaseStringNoSpaces(this.libraryName),
-          libraryRoot: this.componentsRoot,
-        }
-      )
-    }
+    this.fs.copyTpl(
+      this.templatePath('library-templates/.gitignore'),
+      this.destinationPath(process.cwd()+'/.gitignore'),
+      {
+        libraryName: this._titleCaseString(this.libraryName),
+        libraryRoot: this.componentsRoot,
+      }
+    )
   }
   
-  _createMainPackage() {
-    if(this.fs.exists(process.cwd()+'/package.json')) {
-      this.log("skipping package.json");
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('library-templates/base-package.json'),
-        this.destinationPath(process.cwd()+'/package.json'),
-        {
-          libraryName: this._pipeString(this.libraryName),
-          buildFolder: this.libraryBuildPath,
-          libraryRoot: this.componentsRoot,
-        }
-      )
-    }
+  _createLibraryPackage() {
+    this.fs.copyTpl(
+      this.templatePath('library-templates/base-package.json'),
+      this.destinationPath(process.cwd()+'/package.json'),
+      {
+        libraryName: this._pipeString(this.libraryName),
+        buildFolder: this.libraryBuildPath,
+        libraryRoot: this.componentsRoot,
+      }
+    )
   }
+  
   _createNpmIgnore() {
-    if(this.fs.exists(process.cwd()+'/.npmignore')) {
-      this.log("skipping npm ignore file");
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('library-templates/base-npmignore.npmignore'),
-        this.destinationPath(process.cwd()+'/.npmigore'),
-        {
-          buildFolder: this.libraryBuildPath,
-        }
-      )
-    }
+    this.fs.copyTpl(
+      this.templatePath('library-templates/base-npmignore.npmignore'),
+      this.destinationPath(process.cwd()+'/.npmigore'),
+      {
+        buildFolder: this.libraryBuildPath,
+      }
+    )
   }
 
-  _createGlobalVars() {
-    if(this.fs.exists(this.componentsRoot+'/global_style_variables.scss')) {
-      this.log("Global Variables skipped bcz it exists");
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('components-root-templates/global_vars.scss'),
-        this.destinationPath(this.componentsRoot+'/global_style_variables.scss'),
-        { componentName: this.componentName }
-      );    
-    }
+  _createGlobalStyleVariables() {
+    this.fs.copyTpl(
+      this.templatePath('components-root-templates/global_vars.scss'),
+      this.destinationPath(this.componentsRoot+'/global_style_variables.scss'),
+      { componentName: this.componentName }
+    );
   }
   
-  _createJSFile() {
-    if(this.componentType == 'function') {
-      this.fs.copyTpl(
-        this.templatePath('component-templates/function.js'),
-        this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
-        {
-          componentName: this._titleCaseStringNoSpaces(this.componentName),
-          componentNamePiped: this._pipeString(this.componentName),
-        }
-      );  
-    } else {
-      this.fs.copyTpl(
-        this.templatePath('component-templates/class.js'),
-        this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
-        {
-          componentName: this._titleCaseStringNoSpaces(this.componentName),
-          componentNamePiped: this._pipeString(this.componentName),
-        }
-      );  
-    }
+  _createJSClassFile() {
+    this.fs.copyTpl(
+      this.templatePath('component-templates/class.js'),
+      this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
+      {
+        componentName: this._titleCaseStringNoSpaces(this.componentName),
+        componentNamePiped: this._pipeString(this.componentName),
+      }
+    );  
+  }
+  
+  _createJSFunctionFile() {
+    this.fs.copyTpl(
+      this.templatePath('component-templates/function.js'),
+      this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/index.js'),
+      {
+        componentName: this._titleCaseStringNoSpaces(this.componentName),
+        componentNamePiped: this._pipeString(this.componentName),
+      }
+    );
   }
 
-  _createJsonFile() {
+  _createComponentPackage() {
     this.fs.copyTpl(
       this.templatePath('component-templates/package.json'),
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/package.json'),
@@ -239,7 +235,7 @@ module.exports = class extends Generator {
     );  
   }
   
-  _createStyleFile() {
+  _createComponentStyles() {
     this.fs.copyTpl(
       this.templatePath('component-templates/style.scss'),
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/style.scss'),
@@ -249,5 +245,4 @@ module.exports = class extends Generator {
       }
     );  
   }
-
 };
