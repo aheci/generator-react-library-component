@@ -4,13 +4,43 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     
+    this.argument('componentName', { type: String, required: false});
+    this.argument('componentType', { type: String, required: false});
+    
     this.libraryName = this.config.get('libraryName');
     this.componentRoot = this.config.get('componentRoot');
     this.libraryBuildPath = this.config.get('libraryBuildPath');
     
-    this.argument('componentName', { type: String, required: false});
-    this.argument('componentType', { type: String, required: false});
+    this.componentName = this.options.componentName ? this.options.componentName : null;
+    this.componentType = this.options.componentType ? this.options.componentType : null;
     
+  }
+  
+  componentUserInput() {
+    if (this.componentName === null) {
+      return this.prompt([
+        {
+          type : 'input',
+          name : 'componentName',
+          message : 'What is the name of your component?',
+          required : true
+        }
+      ]).then((answer) => {
+        this.componentName = answer.componentName;
+      });
+    }
+    if (this.componentType === null) {
+      return this.prompt([
+        {
+          type : 'input',
+          name : 'componentType',
+          message : 'Is this a function or a class component?',
+          default : 'function'
+        }  
+      ]).then((answer) => {
+        this.componentType = answer.componentType;
+      });
+    }
   }
   
   setLibraryName() {
@@ -59,32 +89,7 @@ module.exports = class extends Generator {
     }
   }
   
-  prompting() {
-    return this.prompt([
-      {
-        type : 'input',
-        name : 'componentName',
-        message : 'What is the name of your component?',
-        default : this.options.componentName,
-        required : true
-      }, {
-        type : 'input',
-        name : 'componentType',
-        message : 'Is this a function or a class component?',
-        default : this.options.componentType ? this.options.componentType : 'function'
-      }
-    ]).then((answers) => {
-      this.log('Component name: ', answers.componentName);
-      this.log('Component Type: ', answers.componentType);
-      this.componentName = answers.componentName;
-      this.componentNamePiped = this._pipeString(this.componentName);
-      this.componentNameReactish = this._titleCaseString(this.componentName);
-      this.componentType = answers.componentType;
-      
-      this.log('Piped Name: ', this.componentNamePiped);
-      this.log('React Name: ', this.componentNameReactish);
-    });
-  }
+
   
   _pipeString(word) {
     this.log("Pipe passed: ",word);
