@@ -8,7 +8,7 @@ module.exports = class extends Generator {
     this.argument('componentType', { type: String, required: false});
     
     this.libraryName = this.config.get('libraryName');
-    this.componentRoot = this.config.get('componentRoot');
+    this.componentsRoot = this.config.get('componentsRoot');
     this.libraryBuildPath = this.config.get('libraryBuildPath');
     
     this.componentName = this.options.componentName ? this.options.componentName : null;
@@ -60,16 +60,16 @@ module.exports = class extends Generator {
   
   setAppOutput() {
     //Decide where components should go
-    if(this.componentRoot === undefined) {
+    if(this.componentsRoot === undefined) {
       return this.prompt([
         {
           type: 'input',
-          name: 'componentRoot',
+          name: 'componentsRoot',
           message: 'What folder do you want to place library in?'
         }
       ]).then((answers) => {
-        this.componentRoot = answers.componentRoot;
-        this.config.set('componentRoot', this.componentRoot);
+        this.componentsRoot = answers.componentsRoot;
+        this.config.set('componentsRoot', this.componentsRoot);
       });
     }
   }
@@ -104,14 +104,14 @@ module.exports = class extends Generator {
   
   handleIndexInventoryFile() {
     //update if it's already there
-    if(this.fs.exists(this.componentRoot+'/index.js')) {
-      this.fs.append(this.componentRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
+    if(this.fs.exists(this.componentsRoot+'/index.js')) {
+      this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
     } else { //if not create it & append to it
       this.fs.copy(
         this.templatePath('component-index.js'),
-        this.destinationPath(this.componentRoot+'/index.js')
+        this.destinationPath(this.componentsRoot+'/index.js')
       )
-      this.fs.append(this.componentRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
+      this.fs.append(this.componentsRoot+'/index.js', 'export { default as '+this.componentNameReactish+' } from "./'+this.componentNamePiped+'"')
     }
   }
   
@@ -124,7 +124,7 @@ module.exports = class extends Generator {
         this.destinationPath(process.cwd()+'/README.md'),
         {
           libraryName: this.libraryName,
-          libraryRoot: this.componentRoot,
+          libraryRoot: this.componentsRoot,
           libraryNamePretty: this._titleCaseString(this.libraryName),
         }
       )
@@ -140,7 +140,7 @@ module.exports = class extends Generator {
         this.destinationPath(process.cwd()+'/.gitignore'),
         {
           libraryName: this._titleCaseString(this.libraryName),
-          libraryRoot: this.componentRoot,
+          libraryRoot: this.componentsRoot,
         }
       )
     }
@@ -156,7 +156,7 @@ module.exports = class extends Generator {
         {
           libraryName: this._pipeString(this.libraryName),
           buildFolder: this.libraryBuildPath,
-          libraryRoot: this.componentRoot,
+          libraryRoot: this.componentsRoot,
         }
       )
     }
@@ -176,12 +176,12 @@ module.exports = class extends Generator {
   }
 
   createGlobalVars() {
-    if(this.fs.exists(this.componentRoot+'/global_style_variables.scss')) {
+    if(this.fs.exists(this.componentsRoot+'/global_style_variables.scss')) {
       this.log("Global Variables skipped bcz it exists");
     } else {
       this.fs.copyTpl(
         this.templatePath('global_vars.scss'),
-        this.destinationPath(this.componentRoot+'/global_style_variables.scss'),
+        this.destinationPath(this.componentsRoot+'/global_style_variables.scss'),
         { componentName: this.componentName }
       );    
     }
@@ -191,7 +191,7 @@ module.exports = class extends Generator {
     if(this.componentType == 'function') {
       this.fs.copyTpl(
         this.templatePath('function.js'),
-        this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/index.js'),
+        this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/index.js'),
         {
           componentName: this.componentNameReactish,
           componentNamePiped: this.componentNamePiped,
@@ -200,7 +200,7 @@ module.exports = class extends Generator {
     } else {
       this.fs.copyTpl(
         this.templatePath('class.js'),
-        this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/index.js'),
+        this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/index.js'),
         {
           componentName: this.componentNameReactish,
           componentNamePiped: this.componentNamePiped,
@@ -212,7 +212,7 @@ module.exports = class extends Generator {
   createJsonFile() {
     this.fs.copyTpl(
       this.templatePath('package.json'),
-      this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/package.json'),
+      this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/package.json'),
       { componentName: this.componentNameReactish }
     );  
   }
@@ -220,7 +220,7 @@ module.exports = class extends Generator {
   createStyleFile() {
     this.fs.copyTpl(
       this.templatePath('style.scss'),
-      this.destinationPath(this.componentRoot+'/'+this.componentNamePiped+'/style.scss'),
+      this.destinationPath(this.componentsRoot+'/'+this.componentNamePiped+'/style.scss'),
       {
         componentName: this.componentName,
         componentNamePiped: this.componentNamePiped,
