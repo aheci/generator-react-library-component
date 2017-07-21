@@ -1,6 +1,6 @@
 {
   "name": "generator-react-library-component",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Generate a new react component as part of a react component library - components created for reuse in other projects",
   "author": "",
   "repository": {
