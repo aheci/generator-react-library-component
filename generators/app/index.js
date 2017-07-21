@@ -15,8 +15,8 @@ module.exports = class extends Generator {
     this.componentType = this.options.componentType ? this.options.componentType : null;
   }
   
-  //Component Related Inputs
-  componentUserInput() {
+  //Component Related Prompts
+  componentNameUserInput() {
     if (this.componentName === null) {
       return this.prompt([
         {
@@ -27,35 +27,30 @@ module.exports = class extends Generator {
         }
       ]).then((answer) => {
         this.componentName = answer.componentName;
+        if(this.componentName === "") {
+          this.env.error("You must include a name for your component, please try again");
+        }
       });
     }
+  }
+  componentTypeUserInput() {
     if (this.componentType === null) {
       return this.prompt([
         {
-          type : 'input',
+          type: 'confirm',
           name : 'componentType',
-          message : 'Is this a function or a class component?',
-          default : 'function'
+          message : 'Is this a functional component?',
+          default : true
         }  
       ]).then((answer) => {
-        this.componentType = answer.componentType.toLowerCase();
+        this.componentType = answer.componentType;
       });
     }
   }
   
-  //General Library Related Inputs
-  libraryUserInput() {
+  //General Library Related Prompts
+  setLibraryName() {
     if(this.libraryName === undefined) {
-      _setLibraryName();  
-    }
-    if(this.componentsRoot === undefined) {
-      _setComponentsRoot();
-    }
-    if(this.libraryBuildPath === undefined) {
-      _setlibraryBuildPath();
-    }
-  }
-  _setLibraryName() {
     return this.prompt([
       {
         type: 'input',
@@ -65,31 +60,45 @@ module.exports = class extends Generator {
     ]).then((answers) => {
       this.libraryName = answers.libraryName;
       this.config.set('libraryName', this.libraryName);
+      if(this.libraryName === "") {
+        this.env.error("You must include a name for your library, please try again");
+      }
     });
   }
-  _setComponentsRoot() {
-    return this.prompt([
-      {
-        type: 'input',
-        name: 'componentsRoot',
-        message: 'What folder do you want to develop your components in?'
-      }
-    ]).then((answers) => {
-      this.componentsRoot = answers.componentsRoot;
-      this.config.set('componentsRoot', this.componentsRoot);
-    });
   }
-  _setlibraryBuildPath() {
-    return this.prompt([
-      {
-        type: 'input',
-        name: 'libraryBuildPath',
-        message: 'Where should built files go for npm?'
-      }
-    ]).then((answers) => {
-      this.libraryBuildPath = answers.libraryBuildPath;
-      this.config.set('libraryBuildPath', this.libraryBuildPath);
-    });
+  setComponentsRoot() {
+    if(this.componentsRoot === undefined) {
+      return this.prompt([
+        {
+          type: 'input',
+          name: 'componentsRoot',
+          message: 'What folder do you want to develop your components in?'
+        }
+      ]).then((answers) => {
+        this.componentsRoot = answers.componentsRoot;
+        this.config.set('componentsRoot', this.componentsRoot);
+        if(this.componentsRoot === "") {
+          this.env.error("You must include a directory name, please try again");
+        }
+      });
+    }
+  }
+  setlibraryBuildPath() {
+    if(this.libraryBuildPath === undefined) {
+      return this.prompt([
+        {
+          type: 'input',
+          name: 'libraryBuildPath',
+          message: 'Where should babel place compiled files?'
+        }
+      ]).then((answers) => {
+        this.libraryBuildPath = answers.libraryBuildPath;
+        this.config.set('libraryBuildPath', this.libraryBuildPath);
+        if(this.libraryBuildPath === "") {
+          this.env.error("You must include a name for your output directory, please try again");
+        }
+      });
+    }
   }
   
   // Format the words
@@ -107,41 +116,41 @@ module.exports = class extends Generator {
 // Different Template File Levels
   handleLibraryFiles() {
     if(!this.fs.exists(process.cwd()+'/README.md')) {
-      _createReadMe();
+      this._createReadMe();
     }
     if(!this.fs.exists(process.cwd()+'/.gitignore')) {
-      _createGitIgnore();
+      this._createGitIgnore();
     }
     if(!this.fs.exists(process.cwd()+'/package.json')) {
-      _createLibraryPackage();
+      this._createLibraryPackage();
     }
     if(!this.fs.exists(process.cwd()+'/.npmignore')) {
-      _createNpmIgnore();
+      this._createNpmIgnore();
     }
   }
   
   handleComponentsRootFiles() {
     if(!this.fs.exists(this.componentsRoot+'/index.js')) {
-      _createIndexInventoryFile();
+      this._createIndexInventoryFile();
     }
     if(!this.fs.exists(this.componentsRoot+'/global_style_variables.scss')) {
-      _createGlobalStyleVariables();
+      this._createGlobalStyleVariables();
     }
-    _updateIndexInventoryFile();
+    this._updateIndexInventoryFile();
   }
   
   handleComponentFiles() {
-    if(this.componentType == 'function') {
-      _createJSFunctionFile();
+    if(this.componentType === true) {
+      this._createJSFunctionFile();
     } else {
-      _createJSClassFile();
+      this._createJSClassFile();
     }
     
-    _createComponentPackage();
-    _createComponentStyles();
+    this._createComponentPackage();
+    this._createComponentStyles();
+    this._createComponentReadme();
   }
   
-//TODO: rename and rework these to match above implementation
   _createIndexInventoryFile() {
     this.fs.copy(
       this.templatePath('component-templates/component-index.js'),
@@ -190,7 +199,7 @@ module.exports = class extends Generator {
   _createNpmIgnore() {
     this.fs.copyTpl(
       this.templatePath('library-templates/base-npmignore.npmignore'),
-      this.destinationPath(process.cwd()+'/.npmigore'),
+      this.destinationPath(process.cwd()+'/.npmignore'),
       {
         buildFolder: this.libraryBuildPath,
       }
@@ -233,6 +242,17 @@ module.exports = class extends Generator {
       this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/package.json'),
       { componentName: this._titleCaseStringNoSpaces(this.componentName) }
     );  
+  }
+  
+  _createComponentReadme() {
+    this.fs.copyTpl(
+      this.templatePath('component-templates/readme.md'),
+      this.destinationPath(this.componentsRoot+'/'+this._pipeString(this.componentName)+'/readme.md'),
+      {
+        componentReactName: this._titleCaseStringNoSpaces(this.componentName),
+        componentPrettyName: this._titleCaseString(this.componentName)
+      }
+    )
   }
   
   _createComponentStyles() {
