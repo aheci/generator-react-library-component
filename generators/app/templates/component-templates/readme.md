@@ -8,7 +8,7 @@ status:
 themed: false
 ---
 
-# Main Content
+# <%= componentPrettyName %>
 
 - QA: 👎
 - Dev: 👍
